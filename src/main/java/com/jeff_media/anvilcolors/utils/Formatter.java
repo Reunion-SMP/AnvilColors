@@ -4,7 +4,6 @@ import com.jeff_media.anvilcolors.data.Color;
 import com.jeff_media.anvilcolors.data.ItalicsMode;
 import com.jeff_media.anvilcolors.data.RenameResult;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Tag;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
 
@@ -25,28 +24,30 @@ public class Formatter {
 
         int colors = 0;
 
-        if(VersionUtils.hasHexColorSupport() && hasPermission(permissible,"anvilcolors.color.hex")) {
+        if (italicsMode == ItalicsMode.REMOVE) {
+            input = ChatColor.RESET + input;
+        }
+
+        if (VersionUtils.hasHexColorSupport() && hasPermission(permissible, "anvilcolors.color.hex")) {
             RenameResult result = replaceHexColors(input, italicsMode);
             input = result.getColoredName();
             colors += result.getReplacedColorsCount();
         }
 
-        for(Color color : Color.list()) {
-            if(hasPermission(permissible, color.getPermission())) {
+        for (Color color : Color.list()) {
+            if (hasPermission(permissible, color.getPermission())) {
                 RenameResult result = color.transform(input, italicsMode == ItalicsMode.FORCE);
                 input = result.getColoredName();
                 colors += result.getReplacedColorsCount();
             }
-        }
-        if(italicsMode == ItalicsMode.REMOVE) {
-            input = ChatColor.RESET + input;
         }
 
         return new RenameResult(input, colors);
     }
 
     private boolean hasPermission(Permissible permissible, String permission) {
-        return !plugin.getConfig().getBoolean("require-permissions") || permissible == null || permissible.hasPermission(permission);
+        return !plugin.getConfig().getBoolean("require-permissions") || permissible == null
+                || permissible.hasPermission(permission);
     }
 
     public static RenameResult replaceHexColors(String input, ItalicsMode italicsMode) {
@@ -58,7 +59,7 @@ public class Formatter {
             colors++;
             output.append(input, lastIndex, matcher.start())
                     .append(ChatColor.of("#" + matcher.group(1)));
-            if(italicsMode == ItalicsMode.FORCE) {
+            if (italicsMode == ItalicsMode.FORCE) {
                 output.append(ChatColor.ITALIC);
             }
 

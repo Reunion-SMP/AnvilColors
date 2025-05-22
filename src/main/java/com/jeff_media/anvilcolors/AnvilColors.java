@@ -3,7 +3,6 @@ package com.jeff_media.anvilcolors;
 import com.jeff_media.anvilcolors.command.ReloadCommand;
 import com.jeff_media.anvilcolors.data.ItalicsMode;
 import com.jeff_media.anvilcolors.listener.AnvilListener;
-import com.jeff_media.anvilcolors.utils.VersionUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AnvilColors extends JavaPlugin {

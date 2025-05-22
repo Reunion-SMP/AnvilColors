@@ -10,9 +10,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.view.AnvilView;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,27 +31,38 @@ public class AnvilListener implements Listener {
     public void onAnvilRename(PrepareAnvilEvent event) {
 
         List<HumanEntity> viewers = event.getViewers();
-        if (viewers.size() != 1) return;
+        if (viewers.size() != 1)
+            return;
         HumanEntity humanEntity = viewers.get(0);
-        if (!(humanEntity instanceof Player)) return;
+        if (!(humanEntity instanceof Player))
+            return;
 
         Player player = (Player) humanEntity;
         ItemStack item = event.getResult();
 
-        if (item == null) return;
-        if (!item.hasItemMeta()) return;
+        if (item == null)
+            return;
+        if (!item.hasItemMeta())
+            return;
         ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
-        if (!meta.hasDisplayName()) return;
+        if (!meta.hasDisplayName())
+            return;
 
-        final String originalName = meta.getDisplayName();
-        String displayName = originalName;
+        if (!(event.getView() instanceof AnvilView))
+            return;
+        AnvilView anvilView = (AnvilView) event.getView();
 
-        RenameResult result = formatter.colorize(player, displayName, plugin.getItalicsMode());
-        if (result.getReplacedColorsCount() == 0) return;
+        String renameText = anvilView.getRenameText();
+        if (renameText == null || renameText.isEmpty())
+            return;
 
-        displayName = result.getColoredName();
+        RenameResult result = formatter.colorize(player, renameText, plugin.getItalicsMode());
+        if (result.getReplacedColorsCount() == 0)
+            return;
 
-        if(VersionUtils.hasAnvilRepairCostSupport()) {
+        String displayName = result.getColoredName();
+
+        if (VersionUtils.hasAnvilRepairCostSupport()) {
             int cost = plugin.getConfig().getInt("level-cost");
             int costMultiplier = plugin.getConfig().getBoolean("cost-per-color") ? result.getReplacedColorsCount() : 1;
             int totalCost = cost * costMultiplier;
@@ -59,12 +70,12 @@ public class AnvilListener implements Listener {
             plugin.debug("Cost: " + cost);
             plugin.debug("Cost multiplier: " + costMultiplier);
             plugin.debug("Total cost: " + totalCost);
-            plugin.debug("Repair cost: " + event.getInventory().getRepairCost());
+            plugin.debug("Repair cost: " + anvilView.getRepairCost());
             plugin.debug("Colors: " + result.getReplacedColorsCount());
 
             if (totalCost > 0) {
-                AnvilInventory inv = event.getInventory();
-                inv.setRepairCost(totalCost + inv.getRepairCost());
+                int newRepairCost = totalCost + anvilView.getRepairCost();
+                anvilView.setRepairCost(newRepairCost);
             }
         }
 

@@ -7,10 +7,9 @@ public class VersionUtils {
 
     private static Boolean hasHexColorSupport = null;
     private static Boolean hasAnvilRepairCostSupport = null;
-    private static Boolean hasPdcSupport = null;
 
     public static boolean hasHexColorSupport() {
-        if(hasHexColorSupport != null) {
+        if (hasHexColorSupport != null) {
             return hasHexColorSupport;
         }
         try {
@@ -22,7 +21,7 @@ public class VersionUtils {
     }
 
     public static boolean hasAnvilRepairCostSupport() {
-        if(hasAnvilRepairCostSupport != null) {
+        if (hasAnvilRepairCostSupport != null) {
             return hasAnvilRepairCostSupport;
         }
         try {
@@ -32,7 +31,5 @@ public class VersionUtils {
             return hasAnvilRepairCostSupport = false;
         }
     }
-
-
 
 }
