@@ -1,6 +1,8 @@
 package com.jeff_media.anvilcolors.data;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.*;
 
@@ -33,11 +35,29 @@ public enum Color {
     RESET(Type.FORMAT, 'r', "reset");
 
     private static final List<Color> COLORS_AND_FORMATS;
+    private static final MiniMessage MINI_MESSAGE;
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER;
+
+    static {
+        List<Color> colorsAndFormats = new ArrayList<>(Arrays.asList(values()));
+        COLORS_AND_FORMATS = Collections.unmodifiableList(colorsAndFormats);
+
+        MINI_MESSAGE = MiniMessage.miniMessage();
+        LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
+                .character('&')
+                .hexColors()
+                .build();
+
+        // initialize each enum value's translation
+        for (Color color : values()) {
+            color.initTranslation();
+        }
+    }
 
     private final Type type;
     private final char colorChar;
     private final String colorCode;
-    private final String translation;
+    private String translation;
     private final String name;
     private final String permission;
 
@@ -49,14 +69,15 @@ public enum Color {
         this.type = type;
         this.colorChar = colorChar;
         this.colorCode = "&" + colorChar;
-        this.translation = ChatColor.translateAlternateColorCodes('&', colorCode);
+        this.translation = null; // will be initialized in static block
         this.name = name;
         this.permission = permission;
     }
 
-    static {
-        List<Color> colorsAndFormats = new ArrayList<>(Arrays.asList(values()));
-        COLORS_AND_FORMATS = Collections.unmodifiableList(colorsAndFormats);
+    private void initTranslation() {
+        // start serializing the color code
+        Component component = LEGACY_SERIALIZER.deserialize(this.colorCode);
+        this.translation = MINI_MESSAGE.serialize(component);
     }
 
     public String getPermission() {
@@ -69,9 +90,13 @@ public enum Color {
 
     public RenameResult transform(String input, boolean forceItalics) {
         int colors = 0;
-        while(input.contains(colorCode)) {
+        while (input.contains(colorCode)) {
             colors++;
-            input = input.replaceFirst(colorCode, translation + (forceItalics ? ChatColor.ITALIC : ""));
+            String replacement = translation;
+            if (forceItalics) {
+                replacement += "<italic>";
+            }
+            input = input.replaceFirst(colorCode, replacement);
         }
         return new RenameResult(input, colors);
     }
