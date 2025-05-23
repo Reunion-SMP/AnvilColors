@@ -1,6 +1,6 @@
 package com.jeff_media.anvilcolors.utils;
 
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.inventory.AnvilInventory;
 
 public class VersionUtils {
@@ -13,7 +13,8 @@ public class VersionUtils {
             return hasHexColorSupport;
         }
         try {
-            ChatColor.class.getDeclaredMethod("of", String.class);
+            // Adventure's MiniMessage always supports hex colors
+            MiniMessage.class.getDeclaredMethod("miniMessage");
             return hasHexColorSupport = true;
         } catch (NoSuchMethodException e) {
             return hasHexColorSupport = false;

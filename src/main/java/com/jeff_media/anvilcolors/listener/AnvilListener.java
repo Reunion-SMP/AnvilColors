@@ -30,6 +30,7 @@ public class AnvilListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onAnvilRename(PrepareAnvilEvent event) {
 
+        // just in case somehow multiple players are viewing the anvil
         List<HumanEntity> viewers = event.getViewers();
         if (viewers.size() != 1)
             return;
@@ -51,27 +52,37 @@ public class AnvilListener implements Listener {
         if (!(event.getView() instanceof AnvilView))
             return;
         AnvilView anvilView = (AnvilView) event.getView();
-
         String renameText = anvilView.getRenameText();
         if (renameText == null || renameText.isEmpty())
             return;
+        boolean hasMiniMessageTags = Formatter.containsMiniMessageTags(renameText);
+        String displayName;
+        int replacedColors = 0;
 
         RenameResult result = formatter.colorize(player, renameText, plugin.getItalicsMode());
-        if (result.getReplacedColorsCount() == 0)
+        String processedText = result.getColoredName();
+        replacedColors = result.getReplacedColorsCount();
+
+        displayName = Formatter.miniMessageToLegacy(processedText);
+
+        if (replacedColors == 0 && hasMiniMessageTags) {
+            displayName = Formatter.miniMessageToLegacy(renameText);
+            replacedColors = 1;
+        }
+
+        if (replacedColors == 0) {
             return;
-
-        String displayName = result.getColoredName();
-
+        }
         if (VersionUtils.hasAnvilRepairCostSupport()) {
             int cost = plugin.getConfig().getInt("level-cost");
-            int costMultiplier = plugin.getConfig().getBoolean("cost-per-color") ? result.getReplacedColorsCount() : 1;
+            int costMultiplier = plugin.getConfig().getBoolean("cost-per-color") ? replacedColors : 1;
             int totalCost = cost * costMultiplier;
 
             plugin.debug("Cost: " + cost);
             plugin.debug("Cost multiplier: " + costMultiplier);
             plugin.debug("Total cost: " + totalCost);
             plugin.debug("Repair cost: " + anvilView.getRepairCost());
-            plugin.debug("Colors: " + result.getReplacedColorsCount());
+            plugin.debug("Colors: " + replacedColors);
 
             if (totalCost > 0) {
                 int newRepairCost = totalCost + anvilView.getRepairCost();
