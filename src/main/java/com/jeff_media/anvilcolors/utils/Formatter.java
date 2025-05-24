@@ -4,7 +4,6 @@ import com.jeff_media.anvilcolors.data.Color;
 import com.jeff_media.anvilcolors.data.ItalicsMode;
 import com.jeff_media.anvilcolors.data.RenameResult;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
@@ -25,7 +24,8 @@ public class Formatter {
             .character('&')
             .hexColors()
             .build();
-    // just in case some crazy player uses the section sign
+    // we have to use the section serializer to ensure that the item in the anvil
+    // inventory is displayed correctly
     private static final LegacyComponentSerializer SECTION_SERIALIZER = LegacyComponentSerializer.builder()
             .hexColors()
             .useUnusualXRepeatedCharacterHexFormat()
@@ -34,6 +34,9 @@ public class Formatter {
     private static final MiniMessage COLOR_ONLY_MINI_MESSAGE = MiniMessage.builder()
             .tags(TagResolver.builder()
                     .resolver(StandardTags.color())
+                    // we have to allow <reset> to make ItalicsMode.REMOVE work
+                    // there is no way to only allow <italic>
+                    .resolver(StandardTags.reset())
                     .build())
             .build();
 
@@ -46,9 +49,10 @@ public class Formatter {
         int colors = 0;
 
         if (italicsMode == ItalicsMode.REMOVE) {
-            // remove formatting by creating a clean component with reset decoration
-            Component component = Component.text(input).decoration(TextDecoration.ITALIC, false);
-            input = MINI_MESSAGE.serialize(component);
+            // since we can't add <!italic> if the player doesn't have the formatting
+            // permission as COLOR_ONLY_MINI_MESSAGE doesn't allow decorations, we'll
+            // instead just add a <reset> tag right before
+            input = "<reset>" + input;
         }
 
         if (VersionUtils.hasHexColorSupport() && hasPermission(permissible, "anvilcolors.color.hex")) {
