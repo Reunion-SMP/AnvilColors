@@ -37,6 +37,8 @@ public class Formatter {
                     // we have to allow <reset> to make ItalicsMode.REMOVE work
                     // there is no way to only allow <italic>
                     .resolver(StandardTags.reset())
+                    .resolver(StandardTags.gradient())
+                    .resolver(StandardTags.rainbow())
                     .build())
             .build();
 
