@@ -31,7 +31,6 @@ require-permissions: false
 #   anvilcolors.color.d - Light purple color (&d)
 #   anvilcolors.color.e - Yellow color (&e)
 #   anvilcolors.color.f - White color (&f)
-#   anvilcolors.color.hex - Hex colors (#123456, 1.16+)
 #
 #   anvilcolors.format.* - All below formatting codes
 #   anvilcolors.format.k - Obfuscated formatting (&k)

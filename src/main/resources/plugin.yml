@@ -20,7 +20,6 @@ permissions:
     anvilcolors.color.*:
         description: Allows to use all colors on anvils
         children:
-            - anvilcolors.color.hex
             - anvilcolors.color.0
             - anvilcolors.color.1
             - anvilcolors.color.2
@@ -46,8 +45,6 @@ permissions:
             - anvilcolors.format.n
             - anvilcolors.format.o
             - anvilcolors.format.r
-    anvilcolors.color.hex:
-        description: Allows to use hex colors (#123456) on anvils
     anvilcolors.color.0:
         description: Allows to use black color (&0) on anvils
     anvilcolors.color.1:

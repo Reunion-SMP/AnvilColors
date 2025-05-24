@@ -11,14 +11,9 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class Formatter {
-
     private final Plugin plugin;
 
-    private static final Pattern HEX_PATTERN = Pattern.compile("#([0-9a-fA-F]{6})");
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
             .character('&')
@@ -49,18 +44,11 @@ public class Formatter {
     public RenameResult colorize(Permissible permissible, String input, ItalicsMode italicsMode) {
 
         int colors = 0;
-
         if (italicsMode == ItalicsMode.REMOVE) {
             // since we can't add <!italic> if the player doesn't have the formatting
             // permission as COLOR_ONLY_MINI_MESSAGE doesn't allow decorations, we'll
             // instead just add a <reset> tag right before
             input = "<reset>" + input;
-        }
-
-        if (VersionUtils.hasHexColorSupport() && hasPermission(permissible, "anvilcolors.color.hex")) {
-            RenameResult result = replaceHexColors(input, italicsMode);
-            input = result.getColoredName();
-            colors += result.getReplacedColorsCount();
         }
 
         for (Color color : Color.list()) {
@@ -77,32 +65,6 @@ public class Formatter {
     private boolean hasPermission(Permissible permissible, String permission) {
         return !plugin.getConfig().getBoolean("require-permissions") || permissible == null
                 || permissible.hasPermission(permission);
-    }
-
-    public static RenameResult replaceHexColors(String input, ItalicsMode italicsMode) {
-        int lastIndex = 0;
-        StringBuilder output = new StringBuilder();
-        Matcher matcher = HEX_PATTERN.matcher(input);
-        int colors = 0;
-        while (matcher.find()) {
-            colors++;
-            output.append(input, lastIndex, matcher.start());
-
-            // add the hex color in MiniMessage format
-            String hexColor = matcher.group(1);
-            output.append("<#").append(hexColor).append(">");
-
-            if (italicsMode == ItalicsMode.FORCE) {
-                output.append("<italic>");
-            }
-
-            lastIndex = matcher.end();
-        }
-        if (lastIndex < input.length()) {
-            output.append(input, lastIndex, input.length());
-        }
-
-        return new RenameResult(output.toString(), colors);
     }
 
     public static String colorize(String s) {
