@@ -37,8 +37,16 @@ public class AnvilListener implements Listener {
         HumanEntity humanEntity = viewers.get(0);
         if (!(humanEntity instanceof Player))
             return;
-
         Player player = (Player) humanEntity;
+
+        if (!(player.hasPermission("anvilcolors.color") || player.hasPermission("anvilcolors.color.*"))) {
+            return;
+        }
+
+        boolean allowFormatting = player.isPermissionSet("anvilcolors.format")
+                && player.hasPermission("anvilcolors.format")
+                || player.isPermissionSet("anvilcolors.format.*") && player.hasPermission("anvilcolors.format.*");
+
         ItemStack item = event.getResult();
 
         if (item == null)
@@ -63,10 +71,18 @@ public class AnvilListener implements Listener {
         String processedText = result.getColoredName();
         replacedColors = result.getReplacedColorsCount();
 
-        displayName = Formatter.miniMessageToLegacy(processedText);
+        if (allowFormatting) {
+            displayName = Formatter.miniMessageToLegacy(processedText);
+        } else {
+            displayName = Formatter.miniMessageToLegacyColorOnly(processedText);
+        }
 
         if (replacedColors == 0 && hasMiniMessageTags) {
-            displayName = Formatter.miniMessageToLegacy(renameText);
+            if (allowFormatting) {
+                displayName = Formatter.miniMessageToLegacy(renameText);
+            } else {
+                displayName = Formatter.miniMessageToLegacyColorOnly(renameText);
+            }
             replacedColors = 1;
         }
 

@@ -4,48 +4,48 @@ version: ${version}
 api-version: 1.13
 authors: [JEFF Media GbR, mfnalex]
 softdepend:
-  - EcoEnchants
+    - EcoEnchants
 commands:
-  anvilcolors:
-    permission: anvilcolors.reload
-    description: Reloads the AnvilColors configuration
+    anvilcolors:
+        permission: anvilcolors.reload
+        description: Reloads the AnvilColors configuration
 permissions:
     anvilcolors.*:
-      children:
-        - anvilcolors.reload
-        - anvilcolors.color.*
-        - anvilcolors.format.*
+        children:
+            - anvilcolors.reload
+            - anvilcolors.color.*
+            - anvilcolors.format.*
     anvilcolors.reload:
         description: Allows the user to reload the AnvilColors configuration
     anvilcolors.color.*:
         description: Allows to use all colors on anvils
         children:
-          - anvilcolors.color.hex
-          - anvilcolors.color.0
-          - anvilcolors.color.1
-          - anvilcolors.color.2
-          - anvilcolors.color.3
-          - anvilcolors.color.4
-          - anvilcolors.color.5
-          - anvilcolors.color.6
-          - anvilcolors.color.7
-          - anvilcolors.color.8
-          - anvilcolors.color.9
-          - anvilcolors.color.a
-          - anvilcolors.color.b
-          - anvilcolors.color.c
-          - anvilcolors.color.d
-          - anvilcolors.color.e
-          - anvilcolors.color.f
+            - anvilcolors.color.hex
+            - anvilcolors.color.0
+            - anvilcolors.color.1
+            - anvilcolors.color.2
+            - anvilcolors.color.3
+            - anvilcolors.color.4
+            - anvilcolors.color.5
+            - anvilcolors.color.6
+            - anvilcolors.color.7
+            - anvilcolors.color.8
+            - anvilcolors.color.9
+            - anvilcolors.color.a
+            - anvilcolors.color.b
+            - anvilcolors.color.c
+            - anvilcolors.color.d
+            - anvilcolors.color.e
+            - anvilcolors.color.f
     anvilcolors.format.*:
         description: Allows to use all formatting on anvils
         children:
-          - anvilcolors.format.k
-          - anvilcolors.format.l
-          - anvilcolors.format.m
-          - anvilcolors.format.n
-          - anvilcolors.format.o
-          - anvilcolors.format.r
+            - anvilcolors.format.k
+            - anvilcolors.format.l
+            - anvilcolors.format.m
+            - anvilcolors.format.n
+            - anvilcolors.format.o
+            - anvilcolors.format.r
     anvilcolors.color.hex:
         description: Allows to use hex colors (#123456) on anvils
     anvilcolors.color.0:
@@ -92,4 +92,3 @@ permissions:
         description: Allows to use italic text (&o) on anvils
     anvilcolors.format.r:
         description: Allows to use reset text (&r) on anvils
-    

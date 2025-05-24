@@ -6,6 +6,8 @@ import com.jeff_media.anvilcolors.data.RenameResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
@@ -27,6 +29,12 @@ public class Formatter {
     private static final LegacyComponentSerializer SECTION_SERIALIZER = LegacyComponentSerializer.builder()
             .hexColors()
             .useUnusualXRepeatedCharacterHexFormat()
+            .build();
+
+    private static final MiniMessage COLOR_ONLY_MINI_MESSAGE = MiniMessage.builder()
+            .tags(TagResolver.builder()
+                    .resolver(StandardTags.color())
+                    .build())
             .build();
 
     public Formatter(Plugin plugin) {
@@ -108,6 +116,19 @@ public class Formatter {
         try {
             // Parse MiniMessage tags into a Component
             Component component = MINI_MESSAGE.deserialize(input);
+            // Convert the Component back to legacy text
+            return SECTION_SERIALIZER.serialize(component);
+        } catch (Exception e) {
+            // If there's an error parsing the MiniMessage tags, return the input unchanged
+            return input;
+        }
+    }
+
+    public static String miniMessageToLegacyColorOnly(String input) {
+
+        try {
+            // Parse MiniMessage tags into a Component
+            Component component = COLOR_ONLY_MINI_MESSAGE.deserialize(input);
             // Convert the Component back to legacy text
             return SECTION_SERIALIZER.serialize(component);
         } catch (Exception e) {
