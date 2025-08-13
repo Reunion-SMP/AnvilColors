@@ -45,7 +45,7 @@ require-permissions: false
 ####################
 
 # In vanilla, items renamed on an anvil are always in italics. The reset code (&r) or
-# color codes however remove the italics. You can use this option to force italics
+# color codes, however, remove the italics. You can use this option to force italics
 # on all renamed items, or to remove the vanilla italics.
 #
 # Available options:
