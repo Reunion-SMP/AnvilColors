@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.jeff_media'
-version = '1.0.5'
+version = '1.0.6'
 
 repositories {
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
@@ -30,7 +30,7 @@ processResources {
     }
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     testLogging {
         events "passed", "skipped", "failed"
     }

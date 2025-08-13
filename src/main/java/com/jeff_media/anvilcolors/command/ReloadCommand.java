@@ -17,7 +17,7 @@ public class ReloadCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         plugin.reloadConfig();
-        // just being lazy here. I would replace the &a color code but I'd rather
+        // just being lazy here. I would replace the &a color code, but I'd rather
         // convert it using the miniMessage serializer than screw anything up
         String miniMessage = Formatter.colorize("&aAnvilColors reloaded");
         String legacyMessage = Formatter.miniMessageToLegacy(miniMessage);

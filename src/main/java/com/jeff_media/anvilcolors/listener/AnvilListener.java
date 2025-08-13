@@ -34,18 +34,16 @@ public class AnvilListener implements Listener {
         List<HumanEntity> viewers = event.getViewers();
         if (viewers.size() != 1)
             return;
-        HumanEntity humanEntity = viewers.get(0);
-        if (!(humanEntity instanceof Player))
+        HumanEntity humanEntity = viewers.getFirst();
+        if (!(humanEntity instanceof Player player))
             return;
-        Player player = (Player) humanEntity;
 
         if (!(player.hasPermission("anvilcolors.color") || player.hasPermission("anvilcolors.color.*"))) {
             return;
         }
 
-        boolean allowFormatting = player.isPermissionSet("anvilcolors.format")
-                && player.hasPermission("anvilcolors.format")
-                || player.isPermissionSet("anvilcolors.format.*") && player.hasPermission("anvilcolors.format.*");
+        boolean allowFormatting = player.hasPermission("anvilcolors.format") ||
+                player.hasPermission("anvilcolors.format.*");
 
         ItemStack item = event.getResult();
 
@@ -57,15 +55,14 @@ public class AnvilListener implements Listener {
         if (!meta.hasDisplayName())
             return;
 
-        if (!(event.getView() instanceof AnvilView))
-            return;
-        AnvilView anvilView = (AnvilView) event.getView();
+        event.getView();
+        AnvilView anvilView = event.getView();
         String renameText = anvilView.getRenameText();
         if (renameText == null || renameText.isEmpty())
             return;
         boolean hasMiniMessageTags = Formatter.containsMiniMessageTags(renameText);
         String displayName;
-        int replacedColors = 0;
+        int replacedColors;
 
         RenameResult result = formatter.colorize(player, renameText, plugin.getItalicsMode());
         String processedText = result.getColoredName();
